@@ -1,8 +1,9 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { AppState } from '../models/app-state.model';
-import { Skill } from '../models/skill.model';
+import { Skill, SkillStatus } from '../models/skill.model';
 import { Task } from '../models/task.model';
 import { INITIAL_STATE } from '../data/initial-state';
+import { computeSkillStatus } from '../logic/skill-status';
 
 /**
  * Центральное хранилище состояния приложения.
@@ -52,6 +53,12 @@ export class SkillTreeStore {
       Object.values(this._state().tasks)
         .filter((t) => t.skillId === skillId)
         .sort((a, b) => this.priorityWeight(b) - this.priorityWeight(a)),
+    );
+  }
+
+  statusById(skillId: string) {
+    return computed<SkillStatus>(() =>
+      computeSkillStatus(skillId, this._state()),
     );
   }
 
