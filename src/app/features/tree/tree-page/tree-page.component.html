@@ -1,0 +1,13 @@
+<section class="tree">
+  <h1 class="tree__title">Дерево навыков</h1>
+
+  @if (rootSkills().length === 0) {
+    <p class="tree__empty">Пока нет ни одного навыка.</p>
+  } @else {
+    <div class="tree__roots">
+      @for (root of rootSkills(); track root.id) {
+        <app-skill-node [skillId]="root.id" />
+      }
+    </div>
+  }
+</section>
