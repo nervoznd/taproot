@@ -66,6 +66,32 @@ export class SkillTreeStore {
   // Мутации: задачи
   // ─────────────────────────────────────────────────────────
 
+  /**
+   * Добавить задачу к навыку.
+   * ID генерируется через crypto.randomUUID().
+   */
+  addTask(input: {
+    skillId: string;
+    title: string;
+    priority: Task['priority'];
+    dueDate?: string | null;
+  }): void {
+    const id = crypto.randomUUID();
+    const task: Task = {
+      id,
+      skillId: input.skillId,
+      title: input.title,
+      status: 'todo',
+      dueDate: input.dueDate ?? null,
+      priority: input.priority,
+    };
+
+    this._state.update((state) => ({
+      ...state,
+      tasks: { ...state.tasks, [id]: task },
+    }));
+  }
+
   updateTaskStatus(taskId: string, status: Task['status']): void {
     this._state.update((state) => {
       const task = state.tasks[taskId];
