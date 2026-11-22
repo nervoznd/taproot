@@ -10,7 +10,7 @@
           @case ('locked') { 🔒 }
         }
       </span>
-      <span class="node__title">{{ node.title }}</span>
+      <a class="node__title" [routerLink]="['/tree', node.id]">{{ node.title }}</a>
       <span class="node__status-label">{{ statusLabel() }}</span>
     </div>
 

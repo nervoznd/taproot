@@ -32,6 +32,12 @@
 
 .node__title {
   flex: 1;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .node__status-label {
