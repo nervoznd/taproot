@@ -1,0 +1,101 @@
+@if (skill(); as node) {
+  <section class="detail">
+    <!-- Хлебные крошки / назад -->
+    <a class="detail__back" routerLink="/tree">← К дереву</a>
+
+    <!-- Заголовок -->
+    <header class="detail__header" [attr.data-status]="status()">
+      <h1 class="detail__title">{{ node.title }}</h1>
+      <span class="detail__status">{{ statusLabel() }}</span>
+    </header>
+
+    <!-- Описание -->
+    @if (node.description) {
+      <p class="detail__description">{{ node.description }}</p>
+    }
+
+    <!-- Прогресс -->
+    <div class="detail__progress">
+      <div class="detail__progress-bar">
+        <div class="detail__progress-fill" [style.width.%]="progressPercent()"></div>
+      </div>
+      <span class="detail__progress-label">
+        {{ doneCount() }} / {{ totalCount() }} задач ({{ progressPercent() }}%)
+      </span>
+    </div>
+
+    <!-- Требования -->
+    @if (node.requires.skillsDone.length > 0) {
+      <div class="detail__requires">
+        <h3>Требования</h3>
+        <ul>
+          @for (reqId of node.requires.skillsDone; track reqId) {
+            <li>{{ store.skills()[reqId]?.title ?? reqId }}</li>
+          }
+        </ul>
+      </div>
+    }
+
+    <!-- Список задач -->
+    <div class="detail__tasks">
+      <h3>Задачи</h3>
+      @if (tasks().length === 0) {
+        <p class="detail__empty">Задач пока нет. Добавь первую!</p>
+      } @else {
+        <ul class="task-list">
+          @for (task of tasks(); track task.id) {
+            <li class="task-item" [attr.data-priority]="task.priority">
+              <label class="task-item__label">
+                <input
+                  type="checkbox"
+                  [checked]="task.status === 'done'"
+                  (change)="toggleTask(task.id, $any($event.target).checked)"
+                />
+                <span class="task-item__title" [class.done]="task.status === 'done'">
+                  {{ task.title }}
+                </span>
+              </label>
+              <span class="task-item__priority">{{ task.priority }}</span>
+              <button
+                type="button"
+                class="task-item__remove"
+                (click)="removeTask(task.id)"
+                aria-label="Удалить задачу"
+                title="Удалить"
+              >
+                ×
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Форма добавления -->
+    <form class="detail__form" [formGroup]="addTaskForm" (ngSubmit)="submitTask()">
+      <h3>Добавить задачу</h3>
+      <div class="detail__form-row">
+        <input
+          type="text"
+          formControlName="title"
+          placeholder="Что нужно сделать?"
+          class="detail__input"
+        />
+        <select formControlName="priority" class="detail__select">
+          <option value="low">Низкий</option>
+          <option value="medium">Средний</option>
+          <option value="high">Высокий</option>
+        </select>
+        <button type="submit" [disabled]="addTaskForm.invalid">Добавить</button>
+      </div>
+      @if (addTaskForm.controls.title.touched && addTaskForm.controls.title.invalid) {
+        <p class="detail__error">Название должно быть не короче 3 символов.</p>
+      }
+    </form>
+  </section>
+} @else {
+  <section class="detail detail--not-found">
+    <h1>Навык не найден</h1>
+    <a routerLink="/tree">← Вернуться к дереву</a>
+  </section>
+}
