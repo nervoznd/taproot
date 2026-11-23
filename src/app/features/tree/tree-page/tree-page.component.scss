@@ -10,6 +10,28 @@
   margin-bottom: 1.5rem;
 }
 
+.tree__reset {
+  margin-bottom: 1rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+  &:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.05);
+  }
+
+  &:active {
+    background: rgba(239, 68, 68, 0.1);
+  }
+}
+
 .tree__roots {
   display: flex;
   flex-direction: column;
@@ -17,6 +39,6 @@
 }
 
 .tree__empty {
-  color: #6b7280;
+  color: var(--text-muted);
   font-style: italic;
 }

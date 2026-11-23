@@ -16,4 +16,10 @@ import { SkillNodeComponent } from '../skill-node/skill-node.component';
 export class TreePageComponent {
   private readonly store = inject(SkillTreeStore);
   readonly rootSkills = this.store.rootSkills;
+
+  resetState(): void {
+    if (confirm('Сбросить весь прогресс? Это необратимо.')) {
+      this.store.reset();
+    }
+  }
 }

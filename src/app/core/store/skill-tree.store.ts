@@ -1,16 +1,32 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, signal, effect, inject } from '@angular/core';
 import { AppState } from '../models/app-state.model';
 import { Skill, SkillStatus } from '../models/skill.model';
 import { Task } from '../models/task.model';
 import { INITIAL_STATE } from '../data/initial-state';
 import { computeSkillStatus } from '../logic/skill-status';
+import { PersistenceService } from '../persistence/persistence.service';
 
 /**
  * Центральное хранилище состояния приложения.
  */
 @Injectable({ providedIn: 'root' })
 export class SkillTreeStore {
-  private readonly _state = signal<AppState>(INITIAL_STATE);
+  private readonly persistence = inject(PersistenceService);
+  private readonly _state = signal<AppState>(
+    this.persistence.load() ?? INITIAL_STATE,
+  );
+
+  constructor() {
+    /**
+     * Автосохранение при каждом изменении состояния.
+     */
+    effect(
+      () => {
+        this.persistence.save(this._state());
+      },
+      { allowSignalWrites: false },
+    );
+  }
 
   // ─────────────────────────────────────────────────────────
   // Публичные селекторы
@@ -110,6 +126,18 @@ export class SkillTreeStore {
     this.updateTaskStatus(taskId, 'done');
   }
 
+  /**
+   * Удалить задачу по id.
+   * Если задачи нет — no-op (не бросаем, не логируем).
+   */
+  removeTask(taskId: string): void {
+    this._state.update((state) => {
+      if (!state.tasks[taskId]) return state;
+      const { [taskId]: _removed, ...rest } = state.tasks;
+      return { ...state, tasks: rest };
+    });
+  }
+
   // ─────────────────────────────────────────────────────────
   // Внутренние утилиты
   // ─────────────────────────────────────────────────────────
@@ -124,5 +152,11 @@ export class SkillTreeStore {
       case 'low':
         return 1;
     }
+  }
+
+  /** Сброс к начальному состоянию + очистка localStorage. */
+  reset(): void {
+    this.persistence.clear();
+    this._state.set(INITIAL_STATE);
   }
 }
