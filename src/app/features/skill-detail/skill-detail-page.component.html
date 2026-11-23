@@ -56,6 +56,15 @@
                 </span>
               </label>
               <span class="task-item__priority">{{ task.priority }}</span>
+              <button
+                type="button"
+                class="task-item__remove"
+                (click)="removeTask(task.id)"
+                aria-label="Удалить задачу"
+                title="Удалить"
+              >
+                ×
+              </button>
             </li>
           }
         </ul>

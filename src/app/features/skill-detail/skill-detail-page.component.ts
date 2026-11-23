@@ -77,4 +77,8 @@ export class SkillDetailPageComponent {
 
     this.addTaskForm.reset({ title: '', priority: 'medium' });
   }
+
+  removeTask(taskId: string): void {
+    this.store.removeTask(taskId);
+  }
 }

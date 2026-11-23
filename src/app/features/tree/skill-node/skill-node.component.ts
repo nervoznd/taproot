@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { SkillTreeStore } from '../../../core/store/skill-tree.store';
 import { SkillStatus } from '../../../core/models/skill.model';
 import { RouterLink } from '@angular/router';
@@ -25,6 +25,8 @@ export class SkillNodeComponent {
 
   readonly childrenIds = computed(() => this.skill()?.childrenIds ?? []);
 
+  readonly hasChildren = computed(() => this.childrenIds().length > 0);
+
   readonly statusLabel = computed(() => {
     switch (this.status()) {
       case 'locked': return 'Заблокировано';
@@ -33,4 +35,13 @@ export class SkillNodeComponent {
       case 'mastered': return 'Освоено';
     }
   });
+
+  /**
+   * Раскрыт ли узел.
+   */
+  readonly expanded = signal(true);
+
+  toggleExpanded(): void {
+    this.expanded.update((v) => !v);
+  }
 }

@@ -2,6 +2,20 @@
   <div class="node" [attr.data-status]="status()">
     <!-- Шапка узла -->
     <div class="node__header" [attr.aria-label]="statusLabel()">
+      @if (hasChildren()) {
+        <button
+          type="button"
+          class="node__toggle"
+          (click)="toggleExpanded()"
+          [attr.aria-expanded]="expanded()"
+          [attr.aria-label]="expanded() ? 'Свернуть' : 'Развернуть'"
+        >
+          {{ expanded() ? '▾' : '▸' }}
+        </button>
+      } @else {
+        <span class="node__toggle-spacer"></span>
+      }
+
       <span class="node__status-icon" [attr.data-status]="status()">
         @switch (status()) {
           @case ('mastered') { ✓ }
@@ -20,7 +34,7 @@
     }
 
     <!-- Дети -->
-    @if (childrenIds().length > 0) {
+    @if (hasChildren() && expanded()) {
       <div class="node__children">
         @for (childId of childrenIds(); track childId) {
           <app-skill-node [skillId]="childId" />
