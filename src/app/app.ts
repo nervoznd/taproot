@@ -1,31 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { UiPreferencesService } from './core/ui/ui-preferences.service';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
+  standalone: true,
+  imports: [RouterOutlet],
   templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('taproot');
-
-  readonly isDark = signal(false);
-
-  constructor() {
-    const saved = localStorage.getItem('taproot:theme');
-    if (saved === 'dark') {
-      this.setTheme(true);
-    }
-  }
-
-  toggleTheme(): void {
-    this.setTheme(!this.isDark());
-  }
-
-  private setTheme(dark: boolean): void {
-    this.isDark.set(dark);
-    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-    localStorage.setItem('taproot:theme', dark ? 'dark' : 'light');
-  }
+  readonly ui = inject(UiPreferencesService);
 }

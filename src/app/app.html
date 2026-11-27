@@ -1,4 +1,8 @@
-<button class="theme-toggle" (click)="toggleTheme()" aria-label="Переключить тему">
-  {{ isDark() ? '☀️' : '🌙' }}
+<button
+  class="theme-toggle"
+  (click)="ui.toggleTheme()"
+  aria-label="Переключить тему"
+>
+  {{ ui.isDark() ? '☀️' : '🌙' }}
 </button>
 <router-outlet />
