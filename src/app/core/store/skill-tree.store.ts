@@ -24,7 +24,6 @@ export class SkillTreeStore {
       () => {
         this.persistence.save(this._state());
       },
-      { allowSignalWrites: false },
     );
   }
 
